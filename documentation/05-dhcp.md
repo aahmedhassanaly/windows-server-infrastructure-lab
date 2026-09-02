@@ -1,116 +1,182 @@
-# TASK 05 — Group Policy
+# TASK 05 — DHCP
 
 ## Objective
 
-Configure and verify Group Policy in the `corp.contoso.local` domain.
+Configure and verify the Windows DHCP Server for the lab environment.
 
-The task covers GPO creation and linking, password and account lockout policies, basic security settings, drive mapping, logon and desktop settings, security filtering, inheritance and precedence, and GPO troubleshooting.
+The task covers DHCP installation, scope configuration, exclusions, reservations, scope options, leases, and basic troubleshooting.
 
 ## Environment
 
-- Domain: `corp.contoso.local`
-- Domain Controller: `DC01`
-- Client/Test Machine: `CLIENT-1`
-- Domain Controller IP: `10.10.10.33`
-- Client/Test Machine IP: `10.10.10.50`
+Domain: corp.contoso.local
 
-## Planned GPO Work
+DHCP Server: DC01
 
-The following Group Policy configuration will be implemented and verified during this task:
+DC01 IP: 10.10.10.33
 
-1. Create and link a GPO.
-2. Configure a password policy.
-3. Configure an account lockout policy.
-4. Configure basic security settings.
-5. Configure a drive mapping policy.
-6. Configure a desktop or logon setting.
-7. Test security filtering.
-8. Review GPO inheritance and precedence.
-9. Apply policy changes using `gpupdate`.
-10. Verify applied policies using `gpresult` and Group Policy Management.
+Network: 10.10.10.0/26
 
-## Group Policy Structure
+Gateway: 10.10.10.1
 
-The GPOs will be linked to the appropriate organizational units in the domain.
+DNS Server: 10.10.10.33
 
-The main OUs used in this lab are:
+## What I Did
 
-- `Corp Users`
-- `IT`
-- `HR`
-- `Finance`
-- `Sales`
-- `Management`
-- `Corp Computers`
-- `Groups`
-- `Servers`
+Installed the DHCP Server role on DC01.
 
-## Verification Commands
+Authorized the DHCP Server in Active Directory.
 
-The following commands will be used to verify Group Policy on the client:
+Created an IPv4 DHCP scope:
+
+Scope Name: Corp-LAN
+Start IP:   10.10.10.40
+End IP:     10.10.10.60
+Subnet:     255.255.255.192 (/26)
+
+Activated the DHCP scope.
+
+Configured DHCP Scope Options:
+
+003 Router
+10.10.10.1
+
+006 DNS Servers
+10.10.10.33
+
+015 DNS Domain Name
+corp.contoso.local
+
+Created an exclusion range:
+
+10.10.10.58 - 10.10.10.59
+
+This range is reserved for future infrastructure or static devices.
+
+Created a DHCP reservation for a client device.
+
+Verified the DHCP address pool and address leases.
+
+Verified the DHCP scope configuration using PowerShell.
+
+## DHCP Verification
+
+The DHCP scope was verified using:
 
 ```powershell
-gpupdate /force
+Get-DhcpServerv4Scope
 ```
+
+Scope:
+
+```text
+10.10.10.40 - 10.10.10.60
+```
+
+The configured DHCP options were verified using:
 
 ```powershell
-gpresult /r
+Get-DhcpServerv4OptionValue -ScopeId 10.10.10.0
 ```
 
-A Group Policy report can also be generated when required:
+Final configuration:
 
-```powershell
-gpresult /h C:\Temp\gpresult.html
+```text
+Router          10.10.10.1
+DNS Server      10.10.10.33
+DNS Domain      corp.contoso.local
+Lease Duration  8 days
 ```
+
+## DHCP Lease
+
+An address lease was observed in the DHCP server:
+
+```text
+10.10.10.55
+```
+
+## AWS Environment Note
+
+The lab is hosted on AWS.
+
+The EC2 network interface receives its DHCP configuration from the AWS VPC DHCP service.
+
+During testing, CLIENT-1 showed:
+
+```text
+DHCP Server: 10.10.10.1
+```
+
+This means the EC2 network interface was using the AWS DHCP service rather than the Windows DHCP server.
+
+Therefore, the Windows DHCP configuration was verified on the server, but the EC2 network interface was not used as proof that Windows DHCP distributed the client IP.
+
+This is an important limitation of the lab environment.
 
 ## Troubleshooting Approach
 
-For a Group Policy problem, I would follow:
+For a DHCP problem, I would follow:
 
 ```text
 Problem
    ↓
 Collect Evidence
    ↓
-Check Client Domain Membership
+Check IP Configuration
    ↓
-Check DNS
+Check DHCP Server
    ↓
-Check OU Location
+Check Scope
    ↓
-Check GPO Link
+Check Scope Options
    ↓
-Check Security Filtering
+Check Leases
    ↓
-Check Inheritance and Precedence
-   ↓
-Run gpupdate
-   ↓
-Check gpresult
+Test Connectivity
    ↓
 Verify the Result
 ```
 
-## Common Checks
+Useful commands include:
 
-When a GPO does not apply, I will check:
+```powershell
+ipconfig /all
+ipconfig /release
+ipconfig /renew
+```
 
-- The client is joined to `corp.contoso.local`.
-- The client uses `DC01` as its DNS server.
-- The user or computer is in the correct OU.
-- The GPO is linked to the correct OU.
-- The GPO is enabled.
-- Security filtering allows the target user or computer to apply the policy.
-- No higher-precedence GPO overrides the setting.
-- The policy was refreshed using `gpupdate /force`.
-- The applied policy was verified using `gpresult /r`.
+On the DHCP server:
+
+```powershell
+Get-DhcpServerv4Scope
+```
+
+```powershell
+Get-DhcpServerv4OptionValue -ScopeId 10.10.10.0
+```
 
 ## Result
 
-TASK 05 is currently **in progress**.
+TASK 05 is complete at the practical configuration level.
 
-The configuration and verification results will be added after the practical Group Policy tasks are completed.
+Current DHCP skill level:
 
-## Next Step
+**3/5 — Can implement**
 
-Configure the first GPO and verify that it applies to the intended target.
+The lab verified:
+
+- DHCP Server installation
+- DHCP authorization
+- Scope creation
+- IP range configuration
+- Scope activation
+- Scope options
+- DHCP exclusions
+- DHCP reservations
+- DHCP leases
+- PowerShell verification
+- Basic DHCP troubleshooting
+
+## Next Task
+
+TASK 06 — Group Policy
