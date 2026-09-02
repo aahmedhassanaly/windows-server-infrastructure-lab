@@ -35,6 +35,8 @@ Subnet:     255.255.255.192 (/26)
 
 Activated the DHCP scope.
 
+<img width="1086" height="633" alt="image" src="https://github.com/user-attachments/assets/c267d36f-74e3-49d3-8078-f053084ee70f" />
+
 Configured DHCP Scope Options:
 
 003 Router
@@ -46,6 +48,8 @@ Configured DHCP Scope Options:
 015 DNS Domain Name
 corp.contoso.local
 
+<img width="1094" height="697" alt="image" src="https://github.com/user-attachments/assets/3d308964-fad7-4617-9422-4a10b0a45f06" />
+
 Created an exclusion range:
 
 10.10.10.58 - 10.10.10.59
@@ -56,68 +60,43 @@ Created a DHCP reservation for a client device.
 
 Verified the DHCP address pool and address leases.
 
+<img width="1108" height="641" alt="image" src="https://github.com/user-attachments/assets/12b0f9f1-593c-4233-b89c-f92c413606fd" />
+
 Verified the DHCP scope configuration using PowerShell.
 
 ## DHCP Verification
 
 The DHCP scope was verified using:
 
-```powershell
 Get-DhcpServerv4Scope
-```
 
 Scope:
 
-```text
 10.10.10.40 - 10.10.10.60
-```
 
 The configured DHCP options were verified using:
 
-```powershell
 Get-DhcpServerv4OptionValue -ScopeId 10.10.10.0
-```
 
 Final configuration:
 
-```text
 Router          10.10.10.1
 DNS Server      10.10.10.33
 DNS Domain      corp.contoso.local
 Lease Duration  8 days
-```
 
 ## DHCP Lease
 
 An address lease was observed in the DHCP server:
 
-```text
 10.10.10.55
-```
 
-## AWS Environment Note
-
-The lab is hosted on AWS.
-
-The EC2 network interface receives its DHCP configuration from the AWS VPC DHCP service.
-
-During testing, CLIENT-1 showed:
-
-```text
-DHCP Server: 10.10.10.1
-```
-
-This means the EC2 network interface was using the AWS DHCP service rather than the Windows DHCP server.
-
-Therefore, the Windows DHCP configuration was verified on the server, but the EC2 network interface was not used as proof that Windows DHCP distributed the client IP.
-
-This is an important limitation of the lab environment.
+<img width="1084" height="634" alt="image" src="https://github.com/user-attachments/assets/cb420aa6-6514-4af6-8420-7d6ec50ee8b7" />
 
 ## Troubleshooting Approach
 
 For a DHCP problem, I would follow:
 
-```text
 Problem
    ↓
 Collect Evidence
@@ -135,48 +114,17 @@ Check Leases
 Test Connectivity
    ↓
 Verify the Result
-```
 
 Useful commands include:
 
-```powershell
 ipconfig /all
 ipconfig /release
 ipconfig /renew
-```
 
 On the DHCP server:
 
-```powershell
 Get-DhcpServerv4Scope
-```
 
-```powershell
 Get-DhcpServerv4OptionValue -ScopeId 10.10.10.0
-```
 
-## Result
-
-TASK 05 is complete at the practical configuration level.
-
-Current DHCP skill level:
-
-**3/5 — Can implement**
-
-The lab verified:
-
-- DHCP Server installation
-- DHCP authorization
-- Scope creation
-- IP range configuration
-- Scope activation
-- Scope options
-- DHCP exclusions
-- DHCP reservations
-- DHCP leases
-- PowerShell verification
-- Basic DHCP troubleshooting
-
-## Next Task
-
-TASK 06 — Group Policy
+<img width="1273" height="612" alt="image" src="https://github.com/user-attachments/assets/d69017ec-831b-49a6-9843-bed9d6918c79" />
