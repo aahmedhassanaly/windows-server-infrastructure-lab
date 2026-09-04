@@ -1,20 +1,22 @@
-# Windows Server Infrastructure Administration Lab
+# Windows Server Infrastructure Lab
 
-## Project Overview
+* Active Directory
+* DNS
+* DHCP
+* Group Policy
+* File Server
+* NTFS and SMB permissions
+* Access-Based Enumeration
+* DFS Namespace
+* Basic troubleshooting
 
-This project is a practical Windows Server infrastructure lab designed to demonstrate real-world junior System Administrator and Infrastructure skills.
-
-The lab focuses on building, configuring, securing, troubleshooting, and documenting a small company Windows environment.
-
-The main goal is not to collect certifications or complete courses. The goal is to demonstrate practical administration skills through realistic implementation, verification, troubleshooting, and documentation.
-
-AWS is used only as the hosting platform for the lab environment. The primary focus of the project is Windows Server infrastructure administration.
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/46a1c150-af91-4ca6-a8f0-023a2a674c15" />
 
 ---
 
 ## Business Scenario
 
-A small company requires a centralized Windows infrastructure environment for several departments:
+The company has five departments:
 
 * IT
 * HR
@@ -22,438 +24,269 @@ A small company requires a centralized Windows infrastructure environment for se
 * Sales
 * Management
 
-The environment requires centralized identity management, DNS, DHCP, Group Policy, file sharing, access control, backup, and recovery.
-
-The lab simulates the responsibilities of a Junior Windows/System Administrator managing this environment.
+The environment provides centralized user management, network services, Group Policy, and department file shares.
 
 ---
 
-## Project Objectives
+## Environment
 
-The project is designed to demonstrate practical experience with:
-
-* Windows Server administration
-* Active Directory Domain Services (AD DS)
-* Domain Controllers
-* Organizational Units (OUs)
-* Users and Security Groups
-* DNS
-* DHCP
-* Group Policy
-* File Server administration
-* NTFS and Share permissions
-* PowerShell administration
-* Windows troubleshooting
-* Backup and restore using Veeam
-* Basic Windows infrastructure security
-* Technical documentation
-
----
-
-## Architecture
-
-The lab uses a small, realistic infrastructure consisting of:
-
-| Server   | Role                      | IP Address  |
-| -------- | ------------------------- | ----------- |
-| DC01     | AD DS / DNS / DHCP        | 10.10.10.33 |
-| FS01     | File Server               | 10.10.10.20 |
-| VEEAM01  | Veeam Backup & Repository | 10.10.10.30 |
-| CLIENT01 | Windows Client            | DHCP        |
+| System   | Role                        |  IP Address |
+| -------- | --------------------------- | ----------: |
+| DC01     | AD DS / DNS / DHCP          | 10.10.10.33 |
+| FS01     | File Server / DFS Namespace | 10.10.10.28 |
+| CLIENT01 | Domain-joined test system   | 10.10.10.50 |
 
 ### Domain
 
-```text
+```
 Domain: corp.contoso.local
 NetBIOS: CORP
 ```
 
 ### Network
 
-```text
+```
 VPC: 10.10.10.0/24
 Subnet: 10.10.10.0/26
 Gateway: 10.10.10.1
 ```
 
+> CLIENT01 uses a Windows Server image and was used as a test system for domain, DNS, GPO, and file access.
+
 ---
 
-## Infrastructure Components
+# Tasks Completed
 
-### DC01
+## TASK 01 — DC01 Preparation
 
-DC01 provides the core Windows infrastructure services:
+Configured DC01 as the main Windows Server.
 
-* Active Directory Domain Services
+Implemented:
+
+* Windows Server
+* AD DS
+* Domain Controller
 * DNS
-* DHCP
-* Domain authentication
-* Centralized identity management
-
-### FS01
-
-FS01 provides:
-
-* Departmental file shares
-* NTFS permissions
-* Share permissions
-* Group-based access control
-
-### CLIENT01
-
-CLIENT01 is used to test:
-
-* Domain joining
-* DNS resolution
-* DHCP
-* Group Policy
-* User authentication
-* File share access
-* Permissions
-
-### VEEAM01
-
-VEEAM01 provides:
-
-* Backup configuration
-* Backup jobs
-* Backup verification
-* Restore testing
+* Global Catalog
+* Basic service verification
 
 ---
 
-## Active Directory Structure
+## TASK 02 — Active Directory
 
-The domain will use an organized OU structure for users, groups, computers, and servers.
+Implemented:
 
-Planned departments:
+* Domain users
+* Security groups
+* Organizational Units
+* Department structure
+* Domain computer management
+* Domain joining
 
-```text
-corp.contoso.local
-│
-├── Users
-│   ├── IT
-│   ├── HR
-│   ├── Finance
-│   ├── Sales
-│   └── Management
-│
-├── Groups
-│
-├── Computers
-│
-└── Servers
+Example groups:
+
+```
+GG-IT
+GG-HR
+GG-Finance
+GG-Sales
+GG-Management
 ```
 
 ---
 
-## DNS
+## TASK 03 — DNS
 
-The DNS environment will demonstrate:
+Implemented and tested:
 
-* Forward lookup
-* Reverse lookup
+* Forward lookup zone
+* Reverse lookup zone
 * A records
 * PTR records
 * DNS forwarding
-* Name resolution testing
 * `nslookup`
-* DNS troubleshooting
+* SRV record verification
 
 ---
 
-## DHCP
+## TASK 04 — DHCP
 
-The DHCP environment will demonstrate:
+Configured:
 
 * DHCP scope
 * Address exclusions
-* Reservations
 * DHCP options
-* DNS integration
+* DNS server
+* Default gateway
+* Domain name
 * Lease management
-* Client troubleshooting
 
----
+Example:
 
-## Group Policy
-
-The lab will demonstrate practical Group Policy administration including:
-
-* GPO creation
-* GPO linking
-* Password policies
-* Account lockout policies
-* Security policies
-* User and computer policies
-* Drive mapping
-* Basic desktop/logon policies
-* Security filtering
-* GPO inheritance and precedence
-* `gpupdate`
-* `gpresult`
-* GPO troubleshooting
-
----
-
-## File Server
-
-Departmental file shares will be created for:
-
-* IT
-* HR
-* Finance
-* Management
-
-Access will be controlled using security groups and appropriate NTFS and Share permissions.
-
-The project will specifically demonstrate the difference between:
-
-```text
-Share Permissions
-        +
-NTFS Permissions
-        =
-Effective Access
+```
+Range: 10.10.10.40 - 10.10.10.60
+DNS:   10.10.10.33
+GW:    10.10.10.1
 ```
 
 ---
 
-## PowerShell & Windows Administration
+## TASK 05 — Group Policy
 
-PowerShell will be used where it provides practical administrative value.
+Implemented and tested:
 
-Examples include:
+* GPO creation
+* GPO linking
+* Desktop policy
+* Account lockout policy
+* Drive mapping
+* GPO verification
+* `gpupdate`
+* `gpresult`
 
-* User administration
-* Group administration
-* Service management
-* Network verification
-* Windows administration
-* Troubleshooting
-* System information gathering
+Example:
 
----
-
-## Backup & Recovery
-
-Veeam will be used to demonstrate a realistic backup and recovery workflow.
-
-The process will include:
-
-1. Configure backup infrastructure
-2. Create backup jobs
-3. Run backups
-4. Verify backup status
-5. Introduce a controlled data-loss scenario
-6. Restore the required data
-7. Verify the restored data
-
-The goal is to demonstrate that a backup is useful only when the restore process is actually tested.
+```
+GPO-IT-Desktop
+```
 
 ---
 
-## Troubleshooting
+## TASK 06 — File Server & Permissions
 
-Troubleshooting is a major part of this project.
+Configured FS01 as a Windows File Server.
 
-The lab will intentionally introduce realistic failures involving areas such as:
+Department shares:
+
+```
+IT
+HR
+Finance
+Sales
+Management
+```
+
+Implemented:
+
+* SMB shares
+* NTFS permissions
+* Share permissions
+* Group-based access
+* Access-Based Enumeration
+* DFS Namespace
+
+DFS Namespace:
+
+```
+\\corp.contoso.local\Shares
+```
+
+Access was tested from CLIENT01 using domain users.
+
+Example:
+
+```
+Test-Path \\FS01\IT
+Test-Path \\FS01\HR
+```
+
+---
+
+# Troubleshooting
+
+Troubleshooting was performed during the lab for areas such as:
 
 * DNS
-* DHCP
-* Active Directory
+* Domain connectivity
 * Group Policy
-* File permissions
-* Network connectivity
-* Backup and restore
+* SMB access
+* NTFS permissions
+* Share permissions
+* Windows services
 
-The troubleshooting methodology used throughout the project is:
+The troubleshooting method used was:
 
-```text
+```
 Problem
    ↓
 Evidence
-   ↓
-Hypothesis
    ↓
 Test
    ↓
 Fix
    ↓
 Verify
-   ↓
-Document
 ```
 
 ---
 
-## Security
+# Security
 
-The lab will demonstrate basic infrastructure security practices including:
+The lab demonstrates basic security practices:
 
-* Least-privilege access
 * Group-based permissions
-* Secure administrative practices
+* Least-privilege access
+* NTFS permissions
+* SMB permissions
+* Domain authentication
 * Controlled network access
-* Appropriate file permissions
-* Backup protection
-* Avoiding unnecessary public exposure
 
 ---
 
-## Project Structure
+# Technologies Used
 
-```text
+| Technology       | Purpose                    |
+| ---------------- | -------------------------- |
+| Windows Server   | Server infrastructure      |
+| Active Directory | User and domain management |
+| DNS              | Name resolution            |
+| DHCP             | Network configuration      |
+| Group Policy     | Centralized configuration  |
+| SMB              | File sharing               |
+| NTFS             | File permissions           |
+| DFS Namespace    | File namespace             |
+| PowerShell       | Administration             |
+| AWS EC2          | Lab hosting                |
+
+---
+
+# Project Structure
+
+```
 windows-server-infrastructure-lab/
 │
 ├── README.md
 │
-├── architecture/
-│   ├── architecture.md
-│   ├── network.md
-│   └── ip-plan.md
-│
-├── active-directory/
-│
-├── dns/
-│
-├── dhcp/
-│
-├── group-policy/
-│
-├── file-server/
-│
-├── powershell/
-│
-├── troubleshooting/
-│
-├── veeam/
-│
-└── screenshots/
-```
-
-Each major task will contain its own documentation and evidence.
-
----
-
-## Skills Demonstrated
-
-The project will be evaluated based on practical ability rather than course completion.
-
-| Skill                         | Status      |
-| ----------------------------- | ----------- |
-| Windows Server Administration | In Progress |
-| Active Directory              | In Progress |
-| DNS                           | Planned     |
-| DHCP                          | Planned     |
-| Group Policy                  | Planned     |
-| File Server                   | Planned     |
-| NTFS / Share Permissions      | Planned     |
-| PowerShell                    | Planned     |
-| Troubleshooting               | Planned     |
-| Veeam Backup & Restore        | Planned     |
-
-Final skill levels will be evaluated after completing the practical assessment.
-
----
-
-## Project Approach
-
-Every major task follows:
-
-```text
-Understand
-   ↓
-Configure
-   ↓
-Verify
-   ↓
-Troubleshoot
-   ↓
-Explain
-   ↓
-Document
-   ↓
-Demonstrate
-```
-
-The objective is to build skills that can be demonstrated during a technical interview and applied in a real IT environment.
-
----
-
-## Scope
-
-### Included
-
-* Windows Server
-* Active Directory
-* DNS
-* DHCP
-* Group Policy
-* File Server
-* Permissions
-* PowerShell
-* Troubleshooting
-* Veeam Backup & Restore
-
-### Intentionally Excluded
-
-The project does not focus on:
-
-* Kubernetes
-* Advanced DevOps
-* Advanced cybersecurity
-* Complex enterprise architecture
-* Clustering / High Availability
-* VMware integration
-* Advanced cloud architecture
-* Unnecessary enterprise technologies
-
-The scope is intentionally limited to skills relevant to a junior Windows/System Administration role.
-
----
-
-## Project Status
-
-**Status:** In Progress
-
-Current phase:
-
-```text
-Foundation → Active Directory
-```
-
-Current task:
-
-```text
-TASK 02 — Promote DC01 to Domain Controller
+└── documentation/
+    ├── 01-DC01 Preparation.md
+    ├── 02-domain-controller-promotion.md
+    ├── 03-active-directory.md
+    ├── 04-dns.md
+    ├── 05-dhcp.md
+    ├── 06-group-policy.md
+    └── 07-file-server-permissions-medium.md
 ```
 
 ---
 
-## Final Assessment
+# Project Result
 
-After completing the lab, a practical assessment will be performed covering:
+The project demonstrates a small Windows domain environment with:
 
-* Active Directory
-* DNS
-* DHCP
-* Group Policy
-* File Server
-* Permissions
-* PowerShell
-* Backup and Restore
-* Troubleshooting
-
-The final assessment will determine the actual skill level for each area using a 0–5 scale:
-
-```text
-0 — No knowledge
-1 — Basic awareness
-2 — Understand concepts
-3 — Can implement
-4 — Can troubleshoot
-5 — Job-ready
+```
+Active Directory
+      +
+DNS
+      +
+DHCP
+      +
+Group Policy
+      +
+File Server
+      +
+Permissions
+      +
+DFS Namespace
 ```
 
-The project will not be considered complete based only on successful configuration. The ability to troubleshoot, explain, verify, and document the environment is required.
+The main focus is practical administration, verification, troubleshooting, and documentation.
